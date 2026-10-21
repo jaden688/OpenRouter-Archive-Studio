@@ -1,0 +1,10 @@
+# Never publish private OpenRouter records or account metadata
+*
+!.gitignore
+!README.md
+!requirements.txt
+!OpenRouter_Translate_Viewer.py
+!archive_metrics_explorer.py
+!openrouter_db_import.py
+!openrouter_recovery.py
+!openrouter_translate_worker.py
