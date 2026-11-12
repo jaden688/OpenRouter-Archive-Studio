@@ -27,6 +27,8 @@ QScrollBar::handle:vertical { background: #405077; border-radius: 5px; }
 
 BASE=pathlib.Path(sys.executable).resolve().parent if getattr(sys,'frozen',False) else pathlib.Path(__file__).resolve().parent
 DB=BASE/'openrouter-logs-EN-WORKING.sqlite'
+from openrouter_schema import initialize_database
+initialize_database(DB)
 WORKER=BASE/'openrouter_translate_worker.py'
 PYTHON=sys.executable
 class TranslationThread(QThread):
@@ -35,7 +37,7 @@ class TranslationThread(QThread):
  def run(self):
   try:
    script=BASE/'openrouter_translate_worker.py'
-   python=str(pathlib.Path.home()/'.local/share/openrouter-translator-venv/bin/python')
+   python=sys.executable
    result=subprocess.run([python,str(script)],input=self.input_text,capture_output=True,text=True,timeout=900)
    if result.returncode:self.done.emit('',result.stderr[-450:] or 'Offline translation failed')
    else:self.done.emit(result.stdout,'')
@@ -82,7 +84,7 @@ class RecoverDialog(QDialog):
 
 class Window(QWidget):
  def __init__(self):
-  super().__init__();self.setWindowTitle('JL // OPENROUTER ARCHIVE :: TRANSLATION CONSOLE');self.resize(1530,900)
+  super().__init__();self.setWindowTitle('OPENROUTER ARCHIVE STUDIO');self.resize(1530,900)
   self.setStyleSheet(STYLE)
   from PySide6.QtGui import QIcon
   icon=BASE/'archive_icon.ico'
@@ -233,5 +235,8 @@ class Window(QWidget):
   self.db.execute('INSERT OR REPLACE INTO english_translations(generation_id,field_name,translated_text) VALUES(?,?,?)',(*self.target,result));self.db.commit()
   self.message.setText('English translation saved inside working SQLite copy.')
   self.select_part(self.selected_part)
+ def closeEvent(self,event):
+  self.db.close()
+  super().closeEvent(event)
 if __name__=='__main__':
  app=QApplication(sys.argv);w=Window();w.show();sys.exit(app.exec())

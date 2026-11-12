@@ -4,6 +4,10 @@ This source preview now reflects the current working OpenRouter Archive Studio a
 
 ## Included
 
+- Windows and Linux first-run launchers that create an isolated Python environment and install dependencies with pip.
+- Automatic creation of a valid empty SQLite archive on first launch.
+- A test suite covering source compilation, fresh database initialization, and GUI startup.
+
 - OpenRouter generation history browsing and inspection.
 - SQLite archive import with duplicate generation ID handling and source preservation.
 - Date-range historical recovery using OpenRouter analytics and generation endpoints.
@@ -13,7 +17,7 @@ This source preview now reflects the current working OpenRouter Archive Studio a
 ## Not included / not claimed
 
 - No hosted web application or public SaaS endpoint is included.
-- No packaged installer is provided by this source preview.
+- No native MSI/EXE or AppImage package is provided; use the included Python-based launchers.
 - No automatic translation of the archive.
 - No support for providers other than OpenRouter is claimed.
 

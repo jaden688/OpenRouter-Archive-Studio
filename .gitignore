@@ -11,3 +11,10 @@
 
 !PUBLICATION_CHECKLIST.md
 !RELEASE_NOTES.md
+!openrouter_schema.py
+!Install-Windows.ps1
+!Install-and-Run-Windows.bat
+!install-and-run-linux.sh
+!requirements-translation.txt
+!tests/
+!tests/*.py

@@ -13,18 +13,21 @@ OpenRouter Archive Studio is a local-first desktop application for retrieving, i
 - **Historical recovery:** retrieve generation IDs through OpenRouter analytics and fetch corresponding generation metadata/content for a selected date range. Requires an OpenRouter management key entered for the recovery session.
 - **Optional translation:** translation is a separate, user-initiated workflow. Original source content remains preserved; the app does not automatically translate the archive.
 
-## Run from source
+## Install and run
 
-Requirements: Python 3.10+ and PySide6.
+**Windows:** Install Python 3.10 or newer, extract the repository ZIP, and double-click Install-and-Run-Windows.bat. The script creates a private .venv, installs the required packages with pip, and launches the application.
 
-```bash
-python -m pip install -r requirements.txt
-python OpenRouter_Translate_Viewer.py
-```
+**Linux:** Install Python 3.10 or newer (including your distribution's venv package), then run chmod +x install-and-run-linux.sh followed by ./install-and-run-linux.sh.
 
-The main window includes the **METRICS EXPLORER**. Keep `archive_metrics_explorer.py` beside the main application file.
+Both launchers keep Python packages in a .venv inside the application folder. They do not modify the system Python environment. The first run downloads PySide6 and its Qt dependencies; this is a sizeable download. Later launches reuse the environment.
 
-Optional offline translation requires Argos Translate and a compatible installed Chinese-to-English language package. It is not required for archive browsing, recovery, or metrics exploration.
+To run the test suite, use python -m unittest discover -s tests -v.
+
+Manual installation: create a virtual environment with python -m venv .venv, activate it, run python -m pip install --upgrade pip, then python -m pip install -r requirements.txt and python OpenRouter_Translate_Viewer.py. On Windows activate with .venv\Scripts\Activate.ps1; on Linux use source .venv/bin/activate.
+
+The first launch creates an empty local SQLite archive automatically. Use IMPORT DATABASE to load an existing compatible archive, or IMPORT / RECOVER to retrieve history through OpenRouter using a management key. The app does not ship with anyone's personal archive.
+
+Optional offline translation is separate. Install requirements-translation.txt into the same .venv, then install a compatible Argos Translate Chinese-to-English language package. Translation remains user-initiated and is never run automatically. Original source content remains preserved.
 
 ## Data and privacy
 
@@ -37,7 +40,7 @@ The application is local-first. Your archive is stored in a SQLite database alon
 
 ## Project status
 
-The working application includes archive browsing, SQLite import, OpenRouter historical recovery, and the metrics explorer. This repository is a source-code preview. Packaged installers, cross-platform release validation, and final distribution terms are not yet provided here.
+The working application includes archive browsing, SQLite import, OpenRouter historical recovery, and the metrics explorer. This repository is a source-code preview. The repository includes Python-based first-run launchers for Windows and Linux. The included test suite covers fresh database initialization and GUI startup. Native packaged installers and final distribution terms are not yet provided here.
 
 ## Scope
 

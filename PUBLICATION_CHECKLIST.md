@@ -12,9 +12,9 @@
 - [x] Sync the current working viewer, metrics explorer, recovery, import, and translation modules into this source tree.
 - [x] Update the README to describe the current feature set and local-first privacy model.
 - [x] Keep personal SQLite archives, exports, credentials, logs, and backups out of version control.
-- [ ] Confirm repository owner/name and attach the correct Git remote.
-- [ ] Publish the source repository as public after reviewing the final staged diff.
-- [ ] Create a tagged source release after a clean-environment test.
+- [x] Confirm repository owner/name and attach the correct Git remote.
+- [x] Publish the source repository as public after reviewing the tracked file list and private database exclusion.
+- [ ] Create a tagged source release after CI and clean-environment tests pass.
 
 ## Launch directory / PostYourStartup
 
@@ -25,7 +25,7 @@
 
 ## Release validation
 
-- [ ] Run on a clean Python environment and verify installation instructions.
+- [ ] Run clean Python environment installation and GUI smoke tests on Linux and Windows.
 - [ ] Verify SQLite import, archive browsing, metrics explorer, filtering, pagination, and CSV export.
 - [ ] Test date-range recovery with a separate test archive and valid OpenRouter management key.
 - [ ] Validate Windows and Linux packaging before offering installers.
