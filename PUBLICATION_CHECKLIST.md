@@ -25,7 +25,8 @@
 
 ## Release validation
 
-- [ ] Run clean Python environment installation and GUI smoke tests on Linux and Windows.
+- [x] Run clean Python environment installation and GUI smoke tests on Linux.
+- [ ] Validate the Windows first-run launcher on Windows.
 - [ ] Verify SQLite import, archive browsing, metrics explorer, filtering, pagination, and CSV export.
 - [ ] Test date-range recovery with a separate test archive and valid OpenRouter management key.
 - [ ] Validate Windows and Linux packaging before offering installers.
@@ -33,5 +34,5 @@
 
 ## Privacy gate
 
-- [ ] Inspect the staged diff for accidental personal data or secrets.
-- [ ] Confirm no personal archive database or exported generation content is tracked.
+- [x] Inspect the published source diff for accidental personal data or secrets.
+- [x] Confirm no personal archive database or exported generation content is tracked.

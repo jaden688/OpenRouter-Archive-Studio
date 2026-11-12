@@ -1,4 +1,4 @@
-PySide6>=6.6
+PySide6-Essentials>=6.6
 
 # Optional, only for user-initiated offline translation:
 # argostranslate>=1.9
