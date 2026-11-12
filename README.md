@@ -1,44 +1,44 @@
 # OpenRouter Archive Studio
 
-A desktop SQLite viewer for OpenRouter generation logs, metadata, tool-call and reasoning transcripts, local translation, and imported analytics.
+**Turn your OpenRouter generation history into readable, searchable telemetry.**
 
-## Features
-- Select models/generations and inspect individual conversation segments
-- View raw metadata, original messages and tool calls
-- Metrics Explorer with columns chosen per table and saved locally
-- Browse all SQLite tables, paginate 150 records at a time, search, sort and export the visible page
-- Full read-only inspector for individual database fields
-- Global row numbers and clear page/scroll-position indicators
-- Import compatible SQLite exports and recover historical generations (OpenRouter management API key entered at runtime)
-- Optional offline Chinese-to-English translation using Argos Translate
+OpenRouter Archive Studio is a local-first desktop application for retrieving, importing, inspecting, and analyzing your OpenRouter generation history. It organizes raw generation records and analytics into a workspace where you can investigate what happened, track usage, and uncover patterns that are difficult to see in raw API activity.
 
-## Linux setup
-Install Python 3 and PySide6, then launch:
+## What it does
 
-    python -m pip install -r requirements.txt
-    python OpenRouter_Translate_Viewer.py
+- **Generation archive:** browse and search generation history, including prompts, completions, reasoning content, timestamps, and raw metadata when available.
+- **Usage and telemetry explorer:** inspect the SQLite archive's analytics tables, choose visible columns, filter and sort records, paginate large datasets, and export selected data to CSV.
+- **Model and provider analysis:** explore available hourly, daily, weekly, and monthly analytics, plus model, provider, application, API-key, token, cost, latency, and other breakdowns supplied by the source archive.
+- **Archive import:** import compatible SQLite archives while preserving source files and skipping duplicate generation IDs.
+- **Historical recovery:** retrieve generation IDs through OpenRouter analytics and fetch corresponding generation metadata/content for a selected date range. Requires an OpenRouter management key entered for the recovery session.
+- **Optional translation:** translation is a separate, user-initiated workflow. Original source content remains preserved; the app does not automatically translate the archive.
 
-The current desktop application expects a local SQLite working copy named
-openrouter-logs-EN-WORKING.sqlite next to the Python files. It is not included.
-Use a trusted existing OpenRouter Archive Studio database with a generations
-table, or adapt the viewer to your own SQLite schema.
-An OpenRouter API or management key is never bundled or required merely to browse saved data.
+## Run from source
 
-Optional local translation expects a separate Argos Translate Python environment
-at ~/.local/share/openrouter-translator-venv/ with the zh to en language package installed.
-Browsing and metrics exploration do not require a translation model.
+Requirements: Python 3.10+ and PySide6.
 
-## Data privacy
-This repository includes source code only.
-Never add your .sqlite/.db files, database exports, translated records, archived prompts,
-captures, backups, key material or logs to a public repository.
-The .gitignore allowlists the five application source modules plus the documentation
-and requirements. User-specific layout preferences are stored in metrics_layouts.json
-and must remain local.
+```bash
+python -m pip install -r requirements.txt
+python OpenRouter_Translate_Viewer.py
+```
 
-The explorer uses a read-only database connection. The main Archive Studio's import,
-recovery, and translation features can write to its working database as intended.
+The main window includes the **METRICS EXPLORER**. Keep `archive_metrics_explorer.py` beside the main application file.
 
-## Known scope
-This is a standalone desktop application and not the JL Engine runtime.
-The current viewer reads an existing compatible archive; it does not generate one from scratch.
+Optional offline translation requires Argos Translate and a compatible installed Chinese-to-English language package. It is not required for archive browsing, recovery, or metrics exploration.
+
+## Data and privacy
+
+The application is local-first. Your archive is stored in a SQLite database alongside the application unless you choose another archive through the import workflow. Generation records can contain private prompts, responses, identifiers, and other sensitive content.
+
+- Do not publish your personal SQLite database, exports, logs, backups, or credentials.
+- Recovery credentials are requested for the recovery session and are not intended to be committed or stored in the source repository.
+- Keep personal archive files outside the source repository. The included `.gitignore` excludes common database, log, backup, and secret file types.
+- Translation is opt-in and separate from the original archived content.
+
+## Project status
+
+The working application includes archive browsing, SQLite import, OpenRouter historical recovery, and the metrics explorer. This repository is a source-code preview. Packaged installers, cross-platform release validation, and final distribution terms are not yet provided here.
+
+## Scope
+
+This project is specifically for **OpenRouter** generation history and analytics. It is not a generic multi-provider LLM observability platform.

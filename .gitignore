@@ -8,3 +8,6 @@
 !openrouter_db_import.py
 !openrouter_recovery.py
 !openrouter_translate_worker.py
+
+!PUBLICATION_CHECKLIST.md
+!RELEASE_NOTES.md

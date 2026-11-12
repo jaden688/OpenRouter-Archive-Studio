@@ -44,11 +44,11 @@ class RecoveryWorker(QThread):
  progress=Signal(str)
  done=Signal(str,str)
  def __init__(self,database,start,end,key):
-  super().__init__();self.database=database;self.start=start;self.end=end;self.key=key
+  super().__init__();self.database=database;self.start_date=start;self.end_date=end;self.key=key
  def run(self):
   try:
    from openrouter_recovery import recover
-   output=recover(str(self.database),self.start,self.end,self.key,self.progress.emit)
+   output=recover(str(self.database),self.start_date,self.end_date,self.key,self.progress.emit)
    self.done.emit(output,'')
   except Exception as e:self.done.emit('',str(e))
   finally:self.key=None

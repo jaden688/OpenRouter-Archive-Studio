@@ -1,4 +1,5 @@
 import json,sqlite3,urllib.request,urllib.parse,urllib.error,datetime,time,os
+from zoneinfo import ZoneInfo
 from concurrent.futures import ThreadPoolExecutor,as_completed
 ROOT='https://openrouter.ai/api/v1'
 def get_json(url,key,payload=None):
@@ -58,11 +59,43 @@ def recover(database,start_date,end_date,key,notify=lambda s:None):
                 rawm=m.get('data',{});rawc=c.get('data',{})
                 if not isinstance(rawm,dict):rawm={}
                 if not isinstance(rawc,dict):rawc={}
-                messages=(rawc.get('input') or {}).get('messages') or []
+                input_data=rawc.get('input') or {}
+                messages=input_data.get('messages') or [] if isinstance(input_data,dict) else []
                 output=rawc.get('output') or {}
+                prompt_text=(chr(10)*2).join('['+str(msg.get('role','?'))+']'+chr(10)+str(msg.get('content','')) for msg in messages if isinstance(msg,dict))
+                if not prompt_text and isinstance(input_data,dict) and isinstance(input_data.get('prompt'),str):
+                    prompt_text=input_data.get('prompt')
                 cols={row[1] for row in conn.execute('PRAGMA table_info(generations)')}
                 if 'id' in cols:
-                    values={'id':gid,'created_at_utc':rawm.get('created_at'),'model':rawm.get('model'),'provider_name':rawm.get('provider_name'),'metadata_status':200 if rawm else 404,'content_status':200 if status=='ok' else 404,'prompt_messages_json':json.dumps(messages,ensure_ascii=False),'prompt_text':'\\n\\n'.join('['+str(msg.get('role','?'))+']\\n'+str(msg.get('content','')) for msg in messages if isinstance(msg,dict)),'completion_text':output.get('completion'),'reasoning_text':output.get('reasoning'),'raw_metadata_json':json.dumps(m,ensure_ascii=False),'raw_content_json':json.dumps(c,ensure_ascii=False)}
+                    stamp=None
+                    try:
+                        stamp=datetime.datetime.fromisoformat(str(rawm.get('created_at','')).replace('Z','+00:00'))
+                        if stamp.tzinfo is None: stamp=stamp.replace(tzinfo=datetime.timezone.utc)
+                    except Exception: pass
+                    local_stamp=stamp.astimezone(ZoneInfo('America/Edmonton')) if stamp else None
+                    values={
+                        'id':gid,'created_at_utc':rawm.get('created_at'),
+                        'created_at_local':local_stamp.isoformat() if local_stamp else None,
+                        'date_utc':stamp.date().isoformat() if stamp else None,
+                        'date_local':local_stamp.date().isoformat() if local_stamp else None,
+                        'model':rawm.get('model'),
+                        'provider_name':rawm.get('provider_name'),'api_type':rawm.get('api_type'),
+                        'tokens_prompt':rawm.get('tokens_prompt'),'tokens_completion':rawm.get('tokens_completion'),
+                        'native_tokens_prompt':rawm.get('native_tokens_prompt'),
+                        'native_tokens_completion':rawm.get('native_tokens_completion'),
+                        'native_tokens_reasoning':rawm.get('native_tokens_reasoning'),
+                        'native_tokens_cached':rawm.get('native_tokens_cached'),
+                        'total_cost':rawm.get('total_cost'),'usage':rawm.get('usage'),
+                        'finish_reason':rawm.get('finish_reason'),'native_finish_reason':rawm.get('native_finish_reason'),
+                        'generation_time_ms':rawm.get('generation_time'),'latency_ms':rawm.get('latency'),
+                        'streamed':rawm.get('streamed'),'cancelled':rawm.get('cancelled'),'is_byok':rawm.get('is_byok'),
+                        'session_id':rawm.get('session_id'),'request_id':rawm.get('request_id'),
+                        'upstream_id':rawm.get('upstream_id'),
+                        'metadata_status':200 if rawm else 404,'content_status':200 if status=='ok' else 404,
+                        'prompt_messages_json':json.dumps(messages,ensure_ascii=False),'prompt_text':prompt_text,
+                        'completion_text':output.get('completion'),'reasoning_text':output.get('reasoning'),
+                        'raw_metadata_json':json.dumps(rawm,ensure_ascii=False),'raw_content_json':json.dumps(rawc,ensure_ascii=False)
+                    }
                     chosen={k:v for k,v in values.items() if k in cols}
                     names=list(chosen); marks=','.join('?' for _ in names)
                     conn.execute('INSERT INTO generations ('+','.join(names)+') VALUES ('+marks+') ON CONFLICT(id) DO UPDATE SET '+','.join(f'{k}=excluded.{k}' for k in names if k!='id'),list(chosen.values()))
